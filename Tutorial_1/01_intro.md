@@ -30,78 +30,55 @@ where [username] is your username in the format of your first name followed by y
 
 When you first log in, the first thing you will see is a line something like this:
 
-test_user_1@bioinfo:~$
+andrewc@bioinfo:~$
 
 This is called the command prompt and it is from here that we issue commands to the terminal. At login, you will be located in a directory called 'home'. You can see this by trying out our first command - pwd which stands for 'print working directory'.
 
 ```bash
-test_user_1@bioinfo:~$ pwd
-/home/andrewc
+andrewc@bioinfo:~$ pwd
+/data/users/andrewc
 ```
 
 The terminal is a way to access the filesystem of our server and so we can use it to see what files and folders are in our current directory using either the `ls` command or the `ll` command. Both of these give us a list of files and folders in our current directory however `ll` also provides a bunch of extra information including the date and time they were last modified, their size, who owns them and who has permission to read, write and execute them. If you are interested in how linux permissions work, have a look at [this](https://www.redhat.com/en/blog/linux-file-permissions-explained).
 
 ```bash
-test_user_1@bioinfo:~$ ls
-R  shared-data  shared-software  shiny-server
-test_user_3@bioinfo:~$ ll
-total 40
-drwxr-x---  4 test_user_3 test_user_3 4096 Aug 18 04:10 ./
-drwxr-xr-x 11 root        root        4096 Aug 18 04:17 ../
--rw-r--r--  1 test_user_3 test_user_3  220 Aug 18 04:09 .bash_logout
--rw-r--r--  1 test_user_3 test_user_3 3831 Aug 18 04:09 .bashrc
-drwx------  2 test_user_3 test_user_3 4096 Aug 18 04:10 .cache/
-drwxr-xr-x  6 test_user_3 test_user_3 4096 Aug 18 04:10 .config/
--rw-r--r--  1 test_user_3 test_user_3  807 Aug 18 04:09 .profile
-lrwxrwxrwx  1 root        root          17 Aug 18 04:09 shared-data -> /data/shared-data/
-lrwxrwxrwx  1 root        root          21 Aug 18 04:09 shared-software -> /home/shared-software/
-lrwxrwxrwx  1 test_user_3 test_user_3   17 Aug 18 04:09 shiny-server -> /srv/shiny-server/
--rw-------  1 test_user_3 test_user_3  761 Aug 18 04:10 .viminfo
--rw-r--r--  1 test_user_3 test_user_3 1600 Aug 18 04:09 .Xdefaults
--rw-r--r--  1 test_user_3 test_user_3   14 Aug 18 04:09 .xscreensaver
+andrewc@bioinfo:/data/users/andrewc$ ls
+shared-data  shared-software
+andrewc@bioinfo:/data/users/andrewc$ ll
+total 8
+drwx------  2 andrewc andrewc 4096 Sep 11 06:30 ./
+drwxr-xr-x 13 andrewc     users       4096 Sep 11 05:59 ../
+lrwxrwxrwx  1 andrewc andrewc   17 Sep 11 06:29 shared-data -> /data/shared-data/
+lrwxrwxrwx  1 andrewc andrewc   21 Sep 11 06:29 shared-software -> /home/shared-software/
 ```
 
-`ll` also shows some files that are not visible with `ls`. These are hidden files that begin with a `.` in their name. Currently, the only normal (non-hidden) things in my home directory are a file called `setup_bats.sh` and two folders called `files` and `R/` . Let's create a directory called `Test` using the command `mkdir` (make directory).
+`ll` might also show some files that are not visible with `ls`. These are hidden files that begin with a `.` in their name. Currently, the only normal (non-hidden) things you'll see when you first log are links to a folder called `shared-data` and another called `shared-software`. Let's create a directory called `Test` using the command `mkdir` (make directory).
 
 ```bash
-test_user_1@bioinfo:~$ mkdir Test
-test_user_1@bioinfo:~$ ll
-total 60
-drwxr-x---  7 test_user_1 test_user_1 4096 Aug 18 04:21 ./
-drwxr-xr-x 11 root        root        4096 Aug 18 04:17 ../
--rw-------  1 test_user_1 test_user_1  965 Aug 18 03:40 .bash_history
--rw-r--r--  1 test_user_1 test_user_1  220 Aug 13 23:01 .bash_logout
--rw-r--r--  1 test_user_1 test_user_1 3905 Aug 15 05:37 .bashrc
-drwx------  2 test_user_1 test_user_1 4096 Aug 14 00:34 .cache/
-drwxr-xr-x  8 test_user_1 test_user_1 4096 Aug 14 01:29 .config/
-drwxrwxr-x  3 test_user_1 test_user_1 4096 Aug 13 23:40 .local/
--rw-r--r--  1 test_user_1 test_user_1  807 Aug 13 23:01 .profile
-drwxr-xr-x  3 test_user_1 test_user_1 4096 Aug 14 05:28 R/
--rw-r--r--  1 test_user_1 test_user_1   15 Aug 14 04:48 .Renviron
--rw-r--r--  1 test_user_1 test_user_1  416 Aug 15 05:47 .Rhistory
-lrwxrwxrwx  1 test_user_1 test_user_1   17 Aug 18 03:26 shared-data -> /data/shared-data/
-lrwxrwxrwx  1 test_user_1 test_user_1   21 Aug 18 03:33 shared-software -> /home/shared-software/
-lrwxrwxrwx  1 test_user_1 test_user_1   17 Aug 13 23:01 shiny-server -> /srv/shiny-server/
-drwxrwxr-x  2 test_user_1 test_user_1 4096 Aug 18 04:21 Test/
--rw-r--r--  1 test_user_1 test_user_1 1600 Aug 13 23:01 .Xdefaults
--rw-r--r--  1 test_user_1 test_user_1   14 Aug 13 23:01 .xscreensaver
+andrewc@bioinfo:/data/users/andrewc$ ll
+total 12
+drwx------  3 andrewc andrewc 4096 Sep 11 06:31 ./
+drwxr-xr-x 13 andrewc     users       4096 Sep 11 05:59 ../
+lrwxrwxrwx  1 andrewc andrewc   17 Sep 11 06:29 shared-data -> /data/shared-data/
+lrwxrwxrwx  1 andrewc andrewc   21 Sep 11 06:29 shared-software -> /home/shared-software/
+drwxrwxr-x  2 andrewc andrewc 4096 Sep 11 06:31 Test/
 ```
 
 We can then move to this new folder using the `cd` command.
 
 ```bash
-test_user_1@bioinfo:~$ cd Test/
-test_user_1@bioinfo:~/Test$ pwd
-/home/test_user_1/Test
+andrewc@bioinfo:~$ cd Test/
+andrewc@bioinfo:/data/users/andrewc/Test$ pwd
+/data/users/andrewc/Test
 ```
 
 So you can see that we are now in a sub directory of our original home directory. This folder is empty so lets create a file here.
 
 ```bash
-test_user_1@bioinfo:~/Test$ echo "Hello World!" >hello.txt
-test_user_1@bioinfo:~/Test$ ls
+andrewc@bioinfo:/data/users/andrewc/Test$ echo "Hello World!" >hello.txt
+andrewc@bioinfo:/data/users/andrewc/Test$ ls
 hello.txt
-test_user_1@bioinfo:~/Test$ cat hello.txt 
+andrewc@bioinfo:/data/users/andrewc/Test$ cat hello.txt 
 Hello World!
 ```
 
@@ -110,10 +87,10 @@ Here I used the `echo` command to repeat a string of text and then I sent this t
 Let's make a second file by copying the first.
 
 ```bash
-test_user_1@bioinfo:~/Test$ cp hello.txt goodbye.txt
-test_user_1@bioinfo:~/Test$ ls
+andrewc@bioinfo:/data/users/andrewc/Test$ cp hello.txt goodbye.txt
+andrewc@bioinfo:/data/users/andrewc/Test$ ls
 goodbye.txt  hello.txt
-test_user_1@bioinfo:~/Test$ cat hello.txt goodbye.txt 
+andrewc@bioinfo:/data/users/andrewc/Test$ cat hello.txt goodbye.txt 
 Hello World!
 Hello World!
 ```
@@ -121,25 +98,25 @@ Hello World!
 Bash doesn't have a rename function. As a workaround, we use the `mv` function to move a file from one place to another and by doing this, we can give the file a new name. In this example we will move hello.txt to the same location it is currently in but with a new name.
 
 ```bash
-test_user_1@bioinfo:~/Test$ mv hello.txt goodmorning.txt
-test_user_1@bioinfo:~/Test$ ls
+andrewc@bioinfo:/data/users/andrewc/Test$ mv hello.txt goodmorning.txt
+andrewc@bioinfo:/data/users/andrewc/Test$ ls
 goodbye.txt  goodmorning.txt
 ```
 
 Now lets move these two files to another location by first creating a directory.
 
 ```bash
-test_user_1@bioinfo:~/Test$ mkdir Test2
-test_user_1@bioinfo:~/Test$ mv goodmorning.txt Test2/goodnight.txt
-test_user_1@bioinfo:~/Test$ mv goodbye.txt /home/andrewc/Test/Test2/
-test_user_1@bioinfo:~/Test$ ls
+andrewc@bioinfo:/data/users/andrewc/Test$ mkdir Test2
+andrewc@bioinfo:/data/users/andrewc/Test$ mv goodmorning.txt Test2/goodnight.txt
+andrewc@bioinfo:/data/users/andrewc/Test$ mv goodbye.txt /data/users/andrewc/Test/Test2/
+andrewc@bioinfo:/data/users/andrewc/Test$ ls
 Test2
-test_user_1@bioinfo:~/Test$ cd Test2/
-test_user_1@bioinfo:~/Test/Test2$ ls
+andrewc@bioinfo:/data/users/andrewc/Test$ cd Test2/
+andrewc@bioinfo:/data/users/andrewc/Test/Test2$ ls
 goodbye.txt  goodnight.txt
 ```
 
-I did a couple of things here that need explaining. After making `Test2` within the directory `/home/andrewc/Test` I moved `goodmorning.txt` to `Test2/` using a *relative path* and changed the name to `goodnight.txt` . A relative path is like an address that only makes sense *relative* to your current location. If you are at your home with a friend and you describe where the bus stop is, you might say something like:
+I did a couple of things here that need explaining. After making `Test2` within the directory `/data/users/andrewc/Test` I moved `goodmorning.txt` to `Test2/` using a *relative path* and changed the name to `goodnight.txt` . A relative path is like an address that only makes sense *relative* to your current location. If you are at your home with a friend and you describe where the bus stop is, you might say something like:
 
 `Go to the street out front, take a left walk 100m, take the next right and then the bus stop will be on the right hand side`.
 
@@ -152,44 +129,44 @@ Smithington
 Smithistan
 ```
 
-This is an address that anyone could use to find a bus stop no matter where they are in the world. In linux, absolute paths describe the precise location of a file of interest within filesystem. So back to our example, we moved `goodbye.txt` to its new home at `/home/andrewc/Test/Test2/` .
+This is an address that anyone could use to find a bus stop no matter where they are in the world. In linux, absolute paths describe the precise location of a file of interest within filesystem. So back to our example, we moved `goodbye.txt` to its new home at `/data/users/andrewc/Test/Test2/` .
 
 Let's remove one of these files now, first making sure that you are in the correct directory using `pwd`.
 
 ```bash
-test_user_1@bioinfo:~/Test/Test2$ pwd
-/home/andrewc/Test/Test2
-test_user_1@bioinfo:~/Test/Test2$ ls
+andrewc@bioinfo:/data/users/andrewc/Test/Test2$ pwd
+/data/users/andrewc/Test/Test2
+andrewc@bioinfo:/data/users/andrewc/Test/Test2$ ls
 goodbye.txt  goodnight.txt
-test_user_1@bioinfo:~/Test/Test2$ rm goodbye.txt 
-test_user_1@bioinfo:~/Test/Test2$ ls
+andrewc@bioinfo:/data/users/andrewc/Test/Test2$ rm goodbye.txt 
+andrewc@bioinfo:/data/users/andrewc/Test/Test2$ ls
 goodnight.txt
 ```
 
 Done! The thing to remember is that there is no recyle bin here. One you've deleted a file or folder, that's it, you're not getting it back so make sure you are sure about what you are doing before you hit enter! This is doubly true of removing a folder. Let's try that next but first let's get out of `Test2` and back in to `Test`.
 
 ```bash
-test_user_1@bioinfo:~/Test/Test2$ pwd
-/home/andrewc/Test/Test2
-test_user_1@bioinfo:~/Test/Test2$ cd ..
-test_user_1@bioinfo:~/Test$ ls
+andrewc@bioinfo:/data/users/andrewc/Test/Test2$ pwd
+/data/users/andrewc/Test/Test2
+andrewc@bioinfo:/data/users/andrewc/Test/Test2$ cd ..
+andrewc@bioinfo:/data/users/andrewc/Test$ ls
 Test2
 ```
 
 To get back to `Test` you can see that I used `cd ..` . The two dots there indicate that I want to move back one directory relative to my current location. If I want to move two directories back from my current location I could use `cd ../..` . One other thing to note is that while `..` represents one directory back, `.` represents the current directory, so if I did `cd .` I would change directory to my current directory, meaning I would remain exactly where I already was. Now let's delete `Test2`.
 
 ``` bash
-test_user_1@bioinfo:~/Test$ rm Test2/
+andrewc@bioinfo:/data/users/andrewc/Test$ rm Test2/
 rm: cannot remove 'Test2/': Is a directory
-test_user_1@bioinfo:~/Test$ rm -r Test2/
-test_user_1@bioinfo:~/Test$ ls
-test_user_1@bioinfo:~/Test$
+andrewc@bioinfo:/data/users/andrewc/Test$ rm -r Test2/
+andrewc@bioinfo:/data/users/andrewc/Test$ ls
+andrewc@bioinfo:/data/users/andrewc/Test$
 ```
 
 My first attempt to remove the folder failed because `rm` only works for files. To remove folders you need to append the *option* `-r` to `rm`. Options are ways to modify the function of a command and most commands will have lots of options. You can see the list of options for a command using `--help` or in some cases `-h`.
 
 ```bash
-test_user_1@bioinfo:~/Test$ rm --help
+andrewc@bioinfo:/data/users/andrewc/Test$ rm --help
 Usage: rm [OPTION]... [FILE]...
 Remove (unlink) the FILE(s).
 
@@ -235,15 +212,23 @@ Amongst the various options available to `rm` you will see the `-r` option to re
 
 ## Exploring common filetypes
 
-Let's move into that files directory located within our home directory and have a look at its contents.
+Let's move into the shared data folder and have a look at its contents.
 
 ```bash
-test_user_1@bioinfo:~$ cd ~/shared_data/tut_1
-test_user_3@bioinfo:~/shared-data/tut_1$ ls
-example.bam  fastq_example.fq  multi_fasta.fa  single_fasta.fa
+andrewc@bioinfo:~$ cd /data/shared_data
+andrewc@bioinfo:/data/shared-data$ ll
+total 60
+drwxr-sr-x 4 andrewc rstudio-users  4096 Sep 11 06:44 ./
+drwxr-xr-x 5 andrewc users          4096 Aug 28 05:58 ../
+-rw-r----- 1 andrewc rstudio-users 31976 Aug 18  2025 example.bam
+drwxr-xr-x 2 andrewc users          4096 Nov 12  2025 example_report/
+-rw-r--r-- 1 andrewc rstudio-users  1094 Aug 18  2025 fastq_example.fq
+drwxr-xr-x 2 andrewc users          4096 Nov 18  2025 fastqs/
+-rw-r--r-- 1 andrewc rstudio-users   764 Aug 18  2025 multi_fasta.fa
+-rw-r--r-- 1 andrewc rstudio-users   361 Aug 18  2025 single_fasta.fa
 ```
 
-The `~` is a special character that just means *home directory*. You can either use this with `cd` or you can use a relative or absolute path to get to the files directory. In here you can see three files. Print the contents of `single_fasta.fa` to the screen using a command you've already learnt. *hint* it's not `dog`.
+In here you can see three files. Print the contents of `single_fasta.fa` to the screen using a command you've already learnt. *hint* it's not `dog`.
 
 This is a fasta file and its a very simple format for storing nucleotide of amino acid sequences. It consists of a header line starting with a `>` followed by a description of the sequence, and a second line containing this sequence. In this case the sequence is wrapped to keep the line lengths limited. Now have a look at the other fasta but use the command `less` to do so. When you're done looking at the sequence, hit the `q` key. `less` is a good way to look at very large files that you don't want to print to the screen. You can scroll up and down with the arrow keys or use the `space bar` to move down a page at a time.
 
@@ -272,7 +257,7 @@ The next file we are going to check out is `example.bam`. Try and have a look at
 Surprise! This one isn't a text file, rather bam files are in a human unreadable binary format. To view this type of file we need to use a package called `samtools` which has been preinstalled for your convenience on this server.
 
 ```bash
-test_user_1@bioinfo:~/shared-data/tut_1$ samtools view -h example.bam 
+andrewc@bioinfo:/data/shared-data/tut_1$ samtools view -h example.bam 
 @HD	VN:1.4	SO:coordinate
 @SQ	SN:1	LN:248956422
 @SQ	SN:2	LN:242193529
@@ -318,7 +303,7 @@ Right, so what is all this nonsense? Bam format is more complicated again as it 
 If you just want to have a look at a single entry, try this:
 
 ```bash
-test_user_1@bioinfo:~/shared-data/tut_1$ samtools view example.bam | head -1
+andrewc@bioinfo:/data/shared-data/tut_1$ samtools view example.bam | head -1
 LH00196:47:22CNY5LT3:6:2135:6659:6832	163	1	16397254	255	100M	=	16397297	144	GGGCTTTGCCCGCTGTGTGCCTGTCACCACCCACCAGCAGTCATGCCCTGGGCTTCCCAAATGGAGAGGTAGCAGGCAACGTTTTTAAAAAGAAAGAAAA	FFFFFFFFFFFFFFFFFF5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	NH:i:1	HI:i:1	AS:i:199	nM:i:0	RG:Z:JCU1701
 ```
 
@@ -327,7 +312,7 @@ There are three parts to this command that should be understood. First up is the
 Just imagine that we are only interested in the start positions of the mapped reads. As this is a tab delimited file, we can use `cut` to extract the columns we are interested in. In this case, we are interersted in column 4.
 
 ```bash
-test_user_1@bioinfo:~/shared-data/tut_1$ samtools view example.bam | cut -f4
+andrewc@bioinfo:/data/shared-data/tut_1$ samtools view example.bam | cut -f4
 16397254
 16397297
 211746504
@@ -345,7 +330,7 @@ test_user_1@bioinfo:~/shared-data/tut_1$ samtools view example.bam | cut -f4
 If this file was comma delimited, we could have to tell the `cut` command to use a comma as the delimiter instead of the default tab. Let's create a comma delimited version of this SAM file and then use cut to extract that same fourth column from it. To replace all the tabs with commas, we can use the command `sed` which has it's own sophisticated syntax. 
 
 ```bash
-test_user_1@bioinfo:~/shared-data/tut_1$ samtools view example.bam | sed 's/\t/\,/g' | head -1
+andrewc@bioinfo:/data/shared-data/tut_1$ samtools view example.bam | sed 's/\t/\,/g' | head -1
 LH00196:47:22CNY5LT3:6:2135:6659:6832,163,1,16397254,255,100M,=,16397297,144,GGGCTTTGCCCGCTGTGTGCCTGTCACCACCCACCAGCAGTCATGCCCTGGGCTTCCCAAATGGAGAGGTAGCAGGCAACGTTTTTAAAAAGAAAGAAAA,FFFFFFFFFFFFFFFFFF5FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF,NH:i:1,HI:i:1,AS:i:199,nM:i:0,RG:Z:JCU1701
 ```
 
@@ -356,7 +341,7 @@ If you understand all that, then it's time for a small challenge. Take the previ
 Now what if we just wanted to extract reads that mapped to eight locations in the genome? For the sake of this exercise, don't worry that you don't know what that means in this context, just know that you should be trying to extract reads that contain the `NH:i:8` flag in column 12. To do this, we can use linux's find command `grep`.
 
 ```bash
-test_user_1@bioinfo:~/shared-data/tut_1$ samtools view example.bam | grep 'NH:i:8'
+andrewc@bioinfo:/data/shared-data/tut_1$ samtools view example.bam | grep 'NH:i:8'
 LH00196:47:22CNY5LT3:8:2154:42108:21028	163	21	8210701	0	58M	=	8210762	161	GTTCCGACCATAAACGATGCCGACCGGCGATGCGGCGGCGTTATTCCCATGACCCGCC	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	NH:i:8HI:i:1	AS:i:156	nM:i:0	RG:Z:JCU1701
 LH00196:47:22CNY5LT3:8:2154:42108:21028	83	21	8210762	0	100M	=	8210701	-161	CAGCTTCCGGGAAACCAAAGTCTTTGGGTTCCGGGGGGAGTATGGTTGCAAAGCTGAAACTTAAAGGAATTGACGGAAGGGCACCACCAGGAGTGGAGCC	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	NH:i:8	HI:i:1	AS:i:156	nM:i:0	RG:Z:JCU1701
 LH00196:47:22CNY5LT3:8:2154:42108:21028	419	21	8254909	0	58M	=	8254970	161	GTTCCGACCATAAACGATGCCGACCGGCGATGCGGCGGCGTTATTCCCATGACCCGCC	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	NH:i:8HI:i:3	AS:i:156	nM:i:0	RG:Z:JCU1701
@@ -380,7 +365,7 @@ This takes the output of `samtools view`, pipes it to `grep` and then prints eve
 Next I want to explain `for loops`. This is a function that repeats a set of commands on a list of inputs. Consider the following for loop that executes a series of commands on every file in the current folder that ends in `.fa`.
 
 ```bash
-test_user_1@bioinfo:~/shared-data/tut_1$ for i in *fa ; do 
+andrewc@bioinfo:/data/shared-data/tut_1$ for i in *fa ; do 
 grep '>' $i ; 
 done
 >sequence_1
@@ -391,17 +376,17 @@ done
 Let's break this down. First up, the for loop introduces the variable `i` and it assigns that variable to every file in the current directory that ends in `fa`, taking note that the use of the wildcard `*` means that we don't care what the file is called, as long as the last two letters of that file name are f and a. So for every file that ends in fa, it then does a search of its contents to extract every line that contains a '>' character. The `$i` denotes the variable `i` introduced at the beginning. If you remember from when we introduced the fasta format, the `>` character denotes the header line of each entry. This probably isn't the greatest example of a for loop and the same sort of output can be obtained in other ways (see below), but if you get used to the syntax of for loops, you'll find yourself using them over and over again. 
 
 ```bash
-test_user_1@bioinfo:~/shared-data/tut_1$ grep '>' multi_fasta.fa single_fasta.fa
+andrewc@bioinfo:/data/shared-data/tut_1$ grep '>' multi_fasta.fa single_fasta.fa
 multi_fasta.fa:>sequence_1
 multi_fasta.fa:>sequence_2
 single_fasta.fa:>sequence_1
-test_user_1@bioinfo:~/shared-data/tut_1$ grep '>' *fa
+andrewc@bioinfo:/data/shared-data/tut_1$ grep '>' *fa
 multi_fasta.fa:>sequence_1
 multi_fasta.fa:>sequence_2
 single_fasta.fa:>sequence_1
 ```
 
-The last thing we are going to try in bash is to create a small executable script. Up until this point, we've just been using the interactive bash shell but we can also use bash non-interactively. First up, navigate to your `~/working-directory` directory, create a new folder here called `bash_scripts` and then move to this new location.
+The last thing we are going to try in bash is to create a small executable script. Up until this point, we've just been using the interactive bash shell but we can also use bash non-interactively. First up, navigate to your `/data/users/*username*` directory, create a new folder here called `bash_scripts` and then move to this new location.
 
 To write a script, we need a text editor and bash has a few options built in. I like to use `vim` but other options include `emacs` and `nano`. I'm going to use `vim` here but feel free to use on of the others if you are familiar with them.
 
@@ -438,7 +423,7 @@ If this all works well, your script should execute properly and you should see t
 This has been just a brief introduction to Bash scripting but there is an enormous amount more that can be done here that we don't have time to cover today. Next up we are going to look at RStudio and see how we can navigate around the same filesystem as we just did with bash.
 
 ## RStudio
-RStudio is an IDE (Integrated Development Environment) for the R programming language. You can access our course RStudio environment [here](https://rstudio.bioinformatics.guide/). 
+RStudio is an IDE (Integrated Development Environment) for the R programming language. You can access our course RStudio environment [here](http://bioinformatics.nec-mf-proj01.cloud.edu.au/rstudio/). 
 
 ![RStudio](images/r_studio.png)
 
@@ -450,21 +435,20 @@ Let's have a look at the console now. R has a concept of the `working directory`
 
 ```R
 > getwd()
-[1] "/home/andrewc"
+[1] "/data/users/andrewc"
 ```
 
 `ls` and `ll` also have equivalents in R:
 
 ```R
 > list.files()
-[1] "files"         "R"             "setup_bats.sh" "Test"         
+[1] "shared-data"     "shared-software" "Test"       
 > 
 > file.info(list.files())
-              size isdir mode               mtime               ctime               atime  uid  gid   uname  grname
-files         4096  TRUE  755 2025-07-31 00:34:56 2025-07-31 00:34:56 2025-07-31 00:35:01 1006 1007 andrewc andrewc
-R             4096  TRUE  755 2025-07-30 00:50:19 2025-07-30 00:50:19 2025-07-30 00:52:39 1006 1007 andrewc andrewc
-setup_bats.sh  129 FALSE  644 2024-04-04 07:02:39 2024-07-21 06:54:33 2025-07-30 00:16:15    0    0    root    root
-Test          4096  TRUE  755 2025-07-30 03:11:34 2025-07-30 03:11:34 2025-07-30 03:11:35 1006 1007 andrewc andrewc
+                size isdir mode               mtime               ctime               atime  uid  gid       uname        grname
+shared-data     4096  TRUE 2755 2026-09-11 06:44:32 2026-09-11 06:44:32 2026-09-11 06:44:33 1000 1004     andrewc rstudio-users
+shared-software 4096  TRUE 0755 2025-11-18 13:51:08 2025-11-18 13:51:08 2026-09-10 17:25:11    0    0        root          root
+Test            4096  TRUE 0775 2026-09-11 06:31:03 2026-09-11 06:31:03 2026-09-11 06:31:03 1002 1005 test_user_1   test_user_1
 ```
 
 If we really want to, can run non R scripts through R by using the `system()` command:
@@ -541,8 +525,9 @@ Next up we're going to look at **functions**. Just say there's an operation that
 > list_fasta_files <- function(directory = ".") {
 }
 ```
-
-If we run this code chunk, we will produce a function called list_fasta_files and this will be listed in our environment pane, but it will not do anything yet because we havene't filled in the bit between the `{}` yet. What we have defined so far is the name of the function `list_fasta_files`, the fact that `list_fasta_files` is a function and that our function will operate on variable that we have called `directory`. We have also defined `directory` to have the default value of `.` which means our working directory. Our choice of calling the variable `directory` was purely our choice that we selected so that anyone reading the code would understand that this function should operate on directories, but if we wanted to, we could have chosen `squid` or `swedish_death_metal` or `oompaloompa` and the code would work perfectly fine, however it would be less *readable* by someone else or by yourself in the future once you've kind of forgotten what this whole project was about.
+list_fasta_files <- function(directory = ".") {
+}
+If we run this code chunk, we will produce a function called list_fasta_files and this will be listed in our environment pane, but it will not do anything because we haven't filled in the bit between the `{}` yet. What we have defined so far is the name of the function `list_fasta_files`, the fact that `list_fasta_files` is a function and that our function will operate on variable that we have called `directory`. We have also defined `directory` to have the default value of `.` which means our working directory. Our choice of calling the variable `directory` was purely our choice that we selected so that anyone reading the code would understand that this function should operate on directories, but if we wanted to, we could have chosen `squid` or `swedish_death_metal` or `oompaloompa` and the code would work perfectly fine, however it would be less *readable* by someone else or by yourself in the future once you've kind of forgotten what this whole project was about.
 
 So let's fill in the `{}`.
 
@@ -567,7 +552,7 @@ Alright, back to the function, have a read through of what we just did to make s
 [1] "multi_fasta.fa"  "single_fasta.fa"
 > list_fasta_files()
 character(0)
-> list_fasta_files("/home/andrewc/files")
+> list_fasta_files("/data/users/andrewc/shared-data")
 [1] "multi_fasta.fa"  "single_fasta.fa"
 ```
 
@@ -582,8 +567,8 @@ Beautiful. Alright, let's save this to a file now and then we'll have a go at im
 Now to use it, you need to use the `source` command. The beauty of this approach is that if you decide at our tutorial next week that you need to list fasta files again, you can simply `source()` this function again and use it straight away.
 
 ```R
-> source("/home/andrewc/functions/my_first_function.R")
-> my_fasta_files <- list_fasta_files("files")
+> source("/data/users/andrewc/functions/my_first_function.R")
+> my_fasta_files <- list_fasta_files("/data/users/andrewc/shared-data")
 > my_fasta_files
 [1] "multi_fasta.fa"  "single_fasta.fa"
 ```
