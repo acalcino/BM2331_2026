@@ -15,14 +15,3 @@ Click [here](http://bioinformatics.nec-mf-proj01.cloud.edu.au/rstudio/) to acces
 
 Week 1: [Bash, R and common file formats](Tutorial_1/01_intro)
 
-#Week 2: [Navigating NCBI and other databases](Tutorial_2/02_databases.md)
-
-#Week 3: [BLAST and Pfam](Tutorial_3/03_blast.md)
-
-#Week 4: [Multiple sequence alignment](Tutorial_4/04_msa.md)
-
-#Week 6: [Phylogenetics I](Tutorial_5/05_phylo.md)
-
-#Week 7: [Phylogenetics II](Tutorial_6/06_phylo.md)
-
-#Week 9: [Read mapping](Tutorial_7/07_map.md)
