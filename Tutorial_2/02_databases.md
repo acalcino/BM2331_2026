@@ -65,7 +65,7 @@ When collecting your primate sequences, you could try the [RefSeq](https://www.n
 
 Before leaving today, make sure you get your project notebook kick started. In [RStudio](http://bioinformatics.nec-mf-proj01.cloud.edu.au/rstudio/), you can click `File`, `New File`, `R Markdown` to create a new R Markdown object, but for now it's probably best to switch to the command line and make your own copy of an example doc that I've created in `~/shared-data/tut_2/report_example.Rmd`. 
 
-To do this, navigate to to your `~/working-directory`, create a new folder called `reports` or something similar and then copy the `report_example.Rmd` file to this new directory. You can then open and edit this file in RStudio.
+To do this, navigate to to your `/data/users/username`, create a new folder called `reports` or something similar and then copy the `report_example.Rmd` file to this new directory. You can then open and edit this file in RStudio.
 
 At the top of this doc, you'll see an `output` line which specifies that this file will create a pdf doc. This can also be switched to html but for our purposes, pdf is best. This is followed by two code chunks which set up the environment and includes instructions for knitr and which libraries to load.
 
@@ -88,7 +88,7 @@ You can either include this as a code block with `echo=FASLE, include=FALSE` or 
 One last thing we need to learn today is how to transfer files between our Nectar instance and our own computers. The easiest way to do this is to use the `scp` (secure copy) command on the command line on our own computers. First, navigate to the location on your computer where you want to download your pdf report to and then type in the following command:
 
 ```bash
-scp test_user_1@bioinformatics.nec-mf-proj01.cloud.edu.au:/home/test_user_1/working-directory/report_example.pdf ./
+scp test_user_1@bioinformatics.nec-mf-proj01.cloud.edu.au:/data/users/username/report_example.pdf ./
 ```
 
 Make sure you modify the script so that you use your own username instead of test_user_1 that is written here. This script runs the scp command to access our server using your username. It then looks for the specified file in the specified location and then saves it to our local machine at the current location as specified by `./`.
@@ -96,7 +96,7 @@ Make sure you modify the script so that you use your own username instead of tes
 In order to do the reverse and upload a file from our local machine to the server, use `scp` like this:
 
 ```bash
-scp report_example.pdf test_user_1@bioinformatics.nec-mf-proj01.cloud.edu.au:/home/test_user_4/working-directory/
+scp report_example.pdf test_user_1@bioinformatics.nec-mf-proj01.cloud.edu.au:/data/users/username
 ```
 
 Alternatively, there are GUIs out there such as FileZilla and Cyberduck which can be setup to access an ssh server for transferring files. If you prefer one of these, you can have a read about them [here](https://tutorials.rc.nectar.org.au/moving-data/01-overview).
