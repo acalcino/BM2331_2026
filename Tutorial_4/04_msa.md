@@ -1,3 +1,96 @@
+# ## InterPro
+# 
+# As we learnt in the last lecture, the key to a protein's function lies in its shape and its distribution of charges. In lecture 7, we will learn about the modularity of proteins and their architectural organisation into 'domains'. These domains perform specific and conserved roles in proteins and are frequently rearranged over evolutionary time to create various configurations that carry out specific roles.
+# 
+# ![domains](images/domains.png)
+# 
+# We can investigate the protein domain architecture using an online tool called [InterPro](https://www.ebi.ac.uk/interpro/) which collates a number of databases which have been produced over the years for protein domain annotation. On the front page, you will see options to search by text, by domain architecture or be sequence. As we want to investigate what is going on in our sequences, choose `Search by sequence` and paste in one of the amino acid fasta files you have in `~/shared-data/tut_3/seqs`. Click `Advanced options` to see the list of databases that InterPro integrates and then click `Search` when you are ready. On the next page, click the sequence name once the search is complete.
+# 
+# On the results page, you will see a bunch of coloured boxes with protein domain names in them. There is a lot of redundancy here because most of the domain architecture tools identify similar protein domains, even though they all use unique methodologies to do so. 
+# 
+# ![interpro](images/interpro.png)
+# 
+# Click the `PFAM` link to the `Piwi domain` indicated by the red arrow. This will take you to a page that gives you a description of the domain, but also provides details on how the domain was defined. 
+# 
+# Recall from the lecture that protein domains are defined by Pfam using a `Hidden Markov Model`. An `HMM` is a matrix of probabilities of seeing any of the 20 amino acids at each location in an alignment. Click on `Profile HMM` to see a HMM logo of the Pfam Piwi domain.
+# 
+# ![logo](images/logo.png)
+# 
+# Like with BLAST, we can use hidden markov models to identify proteins containing specific domains on the command line. Switch over to your terminal and create a new folder in your `/data/users/username/tut_3` for this, giving it a logical name and if need be, create new folders within this for different searches. It's up to you how you control your directory structure but it is very important that it follows a logical system and is readable by others, and by your future self.
+# 
+# ### HMM search on the command line 
+# The next thing we need to do is to obtain a raw HMM to use to search our proteome. Go back to the InterPro page and under `Profile HMM` right click on the `Download` link and click `copy link address` in Chrome or `copy link` in Firefox. Now in your R, start creating the download command like this:
+# 
+# ```R
+# setwd("/data/users/username/tut_3/hmmsearch")
+# url <- "INSERT_YOUR_URL_HERE"
+# ```
+# 
+# The `setwd()` command sets your working directory so R downloads to the correct location. Now go back to your browser, right clink on `Download` again and click `inspect element` in Chrome or `inspect` in Firefox. You'll now see a highlighted line of code that includes `PF02171.hmm.gz`. Copy just this part and add it to your download command so that it now looks like this:
+# 
+# ```R
+# setwd("/data/users/username/tut_3/hmmsearch")
+# url <- "INSERT_YOUR_URL_HERE"
+# destfile <- "PF02171.hmm.gz"
+# download.file(url, destfile)
+# ```
+# 
+# You can now execute this command to download the HMM. To inspect it within R, try the following:
+# 
+# ```R
+# PF02171 <- gzfile("PF02171.hmm.gz", "rt")
+# 
+# # Read first 30 lines
+# lines <- readLines(gzfile("PF02171.hmm.gz"))
+# ```
+# 
+# Alternatively, you can do the same with bash. Go to your terminal and type the following but don't hit enter yet:
+# 
+# ```bash
+# wget INSERT_YOUR_URL_HERE
+# ```
+# 
+# Now go back to your browser, right clink on `Download` again and click `inspect element` in Chrome or `inspect` in Firefox. You'll now see a highlighted line of code that includes `PF02171.hmm.gz`. Copy just this part and add it to your wget command like this:
+# 
+# ```bash
+# wget "INSERT_YOUR_URL_HERE" -O PF02171.hmm.gz
+# ```
+# 
+# You can now hit enter. wget is a command to download files from the internet to your current location. When a URL links directly to a filename, you don't need to include the `-O` option but as this URL points to an API endpoint, you do need to give wget a name to save the file as.
+# 
+# As this file is gzipped, you can't just inspect it directly, for example with `cat`. Instead, try using `zcat` and then pipe the output to `less`.
+# 
+# ![hmm](images/hmm.png)
+# 
+# You don't need to memorise ever component of this file format but it is good to understand the broad concept that an HMM is a large matrix describing the *probability* of finding any particular amino acid at each specific location. 
+# 
+# Now we can use the pre-installed `hmmsearch` command to identify Piwi domain containing peptides in our transcriptome. While this is done using the Bash shell, remember that you can run these sorts of scripts within R using the `system()` command. An example will be provided below.
+# 
+# On the command line, navigate to the hmm folder you created earlier and then run `hmmsearch -h` to see all the options available. At the top you will see the basic usage instructions:
+# 
+# ```bash
+# Usage: hmmsearch [options] <hmmfile> <seqdb>
+# ```
+# 
+# This tells you that to run hmmsearch, at a minumum you require an hmmfile (the file we downloaded from InterPro) and a seqdb which is just a protein fasta file. Have a go at constructing your own hmmsearch command but make sure to include `-o` to define an output file as well as `--tblout` to define a per-sequence hit output table.
+# 
+# Examine both output files. Use your bash scripting or R skills to create lists of protein identifiers (those starting with `ENSP`), transcript identifiers (those starting in `ENST`) and gene identifiers (those starting in `ENSG`). How many of each did it find? Inspect the e-values. Are there any outliers?  What parameters would you modify if you were to run this search again?
+# 
+# It is also possible to download the entire Pfam HMM database and then use the command `hmmscan` to identify all protein domains withing a protein of interest, although we might only try this out if we have the time.
+# 
+# ### Self guided sequence searches
+# 
+# So far today we have conducted BLAST searches and hmm searches of the human transcriptome using hydra and sperm whale PIWI sequences, however for your project, your task is to identify `Aquaporin` sequences in two phylogenetic lineages. Last week we did a bunch of database searches using text inputs to populate our gene lists but this can lead to false negatives where certain sequences are missed. For the rest of the tutorial, your task is to use BLAST and hmmsearch to identify candidate aquaporin genes from the species you will be comparing. As you identify genes, remember to append them to the multi-fasta we created last week. If you need to download a transcriptome for your species, try [ensembl](https://www.ensembl.org/index.html) for vertebrates or [ensembl metazoa](https://metazoa.ensembl.org/index.html) for inverts.
+# 
+# It is also super important to ensure that you are documenting everything in your RMarkdown document! You should include all the code you use there, descriptions of what you are doing and why, and where you obtained data from! 
+
+
+
+
+
+
+
+
 # Multiple sequence alignment
 
 ## MSA

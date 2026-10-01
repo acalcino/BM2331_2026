@@ -81,17 +81,17 @@ The first thing you'll notice is that there are a lot more reported hits here co
 ## BLAST on the command line
 While the online option is great, if you want to run lots of searches or you want to search against a custom database, then you'll need to move to the command line. In this next exercise, we are going to make our own blast databases from fasta files of the human transcriptome, and then use our `piwi` fastas to search for similar sequences in humans.
 
-First thing, move to your ~/working_directory and create the following folders:
+First thing, move to your `/data/users/username` directory and create the following folders:
 
 ```bash
-test_user_1@bioinfo:~/working-directory$ mkdir -p tut_3/blastdb/nt
-test_user_1@bioinfo:~/working-directory$ mkdir -p tut_3/blastdb/pep
+test_user_1@bioinfo:/data/users/username$ mkdir -p tut_3/blastdb/nt
+test_user_1@bioinfo:/data/users/username$ mkdir -p tut_3/blastdb/pep
 ```
 
-This is where we are going to store out nucleotide and peptide databases. Move into the nucleotide database so we can start to build it. For your convenience, I have already downloaded the transcriptome fasta files from the [Ensembl](https://ftp.ensembl.org/pub/current_fasta/homo_sapiens/) website and put them in the `~/shared-data/tut_3/human_transcriptome/` directory. I have also preinstalled the various BLAST programs from [NCBI]( https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) so to use the programs, you just need to type their names into the command line. Firstly, try bring up the help menu for `makeblastdb` which is the program for making blast databases from fasta files:
+This is where we are going to store out nucleotide and peptide databases. Move into the nucleotide database so we can start to build it. For your convenience, I have already downloaded the transcriptome fasta files from the [Ensembl](https://ftp.ensembl.org/pub/current_fasta/homo_sapiens/) website and put them in the `/data/users/username/shared-data` directory. I have also preinstalled the various BLAST programs from [NCBI]( https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) so to use the programs, you just need to type their names into the command line. Firstly, try bring up the help menu for `makeblastdb` which is the program for making blast databases from fasta files:
 
 ```bash
-test_user_1@bioinfo:~/working-directory/tut_3/blastdb/nt$ makeblastdb -help
+test_user_1@bioinfo:/data/users/username/tut_3/blastdb/nt$ makeblastdb -help
 USAGE
   makeblastdb [-h] [-help] [-help-full] [-in input_file] [-input_type type]
     -dbtype molecule_type [-title database_title] [-parse_seqids]
@@ -190,10 +190,10 @@ OPTIONAL ARGUMENTS
 So you can see there are a LOT of things you can tweak here. Don't worry, you aren't expected to know every single parameter here. We will now walk through an example of how to make a blastn database for searching nucleotide sequences and then afterwards, you can have a go yourself at producing a protein database for blastp.
 
 ```bash
-test_user_1@bioinfo:~/working-directory/tut_3/blastdb/nt$ makeblastdb -dbtype nucl -in /data/shared-data/tut_3/human_transcriptome/nt/Homo_sapiens.GRCh38.cdna.all.fa -input_type fasta -parse_seqids -hash_index -out human_nt
+test_user_1@bioinfo:/data/users/username/tut_3/blastdb/nt$ makeblastdb -dbtype nucl -in /data/shared-data/tut_3/human_transcriptome/nt/Homo_sapiens.GRCh38.cdna.all.fa -input_type fasta -parse_seqids -hash_index -out human_nt
 ```
 
-I this command, we defined the database type (nucleotide), the input fasta sequence from which the database will be built (Homo_sapiens.GRCh38.cdna.all.fa), the input type (fasta) and the output filename prefix (human_nt). We also included the flags `-parse_seqids` and `-hash_index` which will firstly tell `makeblastdb` to use the sequence ids in the input file rather than internally created identifiers, and secondly, will create a lookup hash index. Together, these allow you to extract sequences from the database using the sequence ids, but we will come to this in a bit.
+In this command, we defined the database type (nucleotide), the input fasta sequence from which the database will be built (Homo_sapiens.GRCh38.cdna.all.fa), the input type (fasta) and the output filename prefix (human_nt). We also included the flags `-parse_seqids` and `-hash_index` which will firstly tell `makeblastdb` to use the sequence ids in the input file rather than internally created identifiers, and secondly, will create a lookup hash index. Together, these allow you to extract sequences from the database using the sequence ids, but we will come to this in a bit.
 
 We can now use this database to find alignments between an input sequence and those making up the human transcriptome. Run `blastn -help` to get a list of the options available for blastn. Have a go at creating your own blastn script to find genes with similarity to the piwi sequence you have in `~/shared-data/tut_3/seqs`. In this directory you will find two nucleotide sequences, one from a sperm whale and one from a hydra (cnidarian). Try both out and compare your results. Try modifying the e value to see how this impacts things. While you can experiment with which other parameters to modify, make sure you use these at a minimum:
 
@@ -207,10 +207,11 @@ We can now use this database to find alignments between an input sequence and th
 
 While you are thinking about your results, have a go at building a human protein blast database and try the `*_pep.fa` sequences too. Follow the steps we used to create the blastn database above and discuss how your results differ between the blastn and blastp runs.
 
+## Sequence retrieval
 One other thing that a blast database can be used for is retrieving sequences if you know what's in the header. Have a go at this `blastdbcmd` command:
 
 ```bash
-test_user_1@bioinfo:~/working-directory/tut_3/blastdb/nt$ blastdbcmd -db human_nt -entry ENST00000632136.1
+test_user_1@bioinfo:/data/users/username/tut_3/blastdb/nt$ blastdbcmd -db human_nt -entry ENST00000632136.1
 >ENST00000632136.1 cdna scaffold:GRCh38:HSCHR7_2_CTG6:814667:816341:1 gene:ENSG00000281981.2 gene_biotype:TR_C_gene transcript_biotype:TR_C_gene gene_symbol:TRBC1 description:T cell receptor beta constant 1 [Source:HGNC Symbol;Acc:HGNC:12156]
 AGGACCTGAACAAGGTGTTCCCACCCGAGGTCGCTGTGTTTGAGCCATCAGAAGCAGAGATCTCCCACACCCAAAAGGCC
 ACACTGGTGTGCCTGGCCACAGGCTTCTTCCCCGACCACGTGGAGCTGAGCTGGTGGGTGAATGGGAAGGAGGTGCACAG
@@ -226,88 +227,11 @@ TAAGTGACTAAACCAATAAAAATGTTCTGGTCTGGCCTGA
 
 This rapidly retrieves the sequence corresponding to our query of `ENST00000632136.1`.
 
-## InterPro
+## Project
+So far we have been populating our multi-fasta with sequences from humans only. Our task now is to include sequences from a bunch of different species in order to study how our gene families evolved over the course of the evolution of animals. To do this, we need to sample widely (and ideally deeply) across animal taxa in order to get a good grasp of how our gene family evolved along different lineages.
 
-As we learnt in the last lecture, the key to a protein's function lies in its shape and its distribution of charges. In lecture 7, we will learn about the modularity of proteins and their architectural organisation into 'domains'. These domains perform specific and conserved roles in proteins and are frequently rearranged over evolutionary time to create various configurations that carry out specific roles.
+![ncbi](images/tree.png)
 
-![domains](images/domains.png)
+This phylogenetic tree comes from `Insights into bilaterian evolution from three spiralian genomes` by Simakov et. al, 2013. There has been a lot of change over the decades in the consensus view of how the different animal lineages evolved but in recent years, we seem to have settled on this situation where the bilaterian species can be divided into three groups - the Lophotrochozoa, the Ecdysozoa and the Deuterstomia. Below this lie the non bilaterians - the Cnidaria (jellyfish and allies), the Porifera (sponges) and the Ctenophora (comb jellies). 
 
-We can investigate the protein domain architecture using an online tool called [InterPro](https://www.ebi.ac.uk/interpro/) which collates a number of databases which have been produced over the years for protein domain annotation. On the front page, you will see options to search by text, by domain architecture or be sequence. As we want to investigate what is going on in our sequences, choose `Search by sequence` and paste in one of the amino acid fasta files you have in `~/shared-data/tut_3/seqs`. Click `Advanced options` to see the list of databases that InterPro integrates and then click `Search` when you are ready. On the next page, click the sequence name once the search is complete.
-
-On the results page, you will see a bunch of coloured boxes with protein domain names in them. There is a lot of redundancy here because most of the domain architecture tools identify similar protein domains, even though they all use unique methodologies to do so. 
-
-![interpro](images/interpro.png)
-
-Click the `PFAM` link to the `Piwi domain` indicated by the red arrow. This will take you to a page that gives you a description of the domain, but also provides details on how the domain was defined. 
-
-Recall from the lecture that protein domains are defined by Pfam using a `Hidden Markov Model`. An `HMM` is a matrix of probabilities of seeing any of the 20 amino acids at each location in an alignment. Click on `Profile HMM` to see a HMM logo of the Pfam Piwi domain.
-
-![logo](images/logo.png)
-
-Like with BLAST, we can use hidden markov models to identify proteins containing specific domains on the command line. Switch over to your terminal and create a new folder in your `~/working-directory/tut_3` for this, giving it a logical name and if need be, create new folders within this for different searches. It's up to you how you control your directory structure but it is very important that it follows a logical system and is readable by others, and by your future self.
-
-### HMM search on the command line 
-The next thing we need to do is to obtain a raw HMM to use to search our proteome. Go back to the InterPro page and under `Profile HMM` right click on the `Download` link and click `copy link address` in Chrome or `copy link` in Firefox. Now in your R, start creating the download command like this:
-
-```R
-setwd("~/working-directory/tut_3/hmmsearch")
-url <- "INSERT_YOUR_URL_HERE"
-```
-
-The `setwd()` command sets your working directory so R downloads to the correct location. Now go back to your browser, right clink on `Download` again and click `inspect element` in Chrome or `inspect` in Firefox. You'll now see a highlighted line of code that includes `PF02171.hmm.gz`. Copy just this part and add it to your download command so that it now looks like this:
-
-```R
-setwd("~/working-directory/tut_3/hmmsearch")
-url <- "INSERT_YOUR_URL_HERE"
-destfile <- "PF02171.hmm.gz"
-download.file(url, destfile)
-```
-
-You can now execute this command to download the HMM. To inspect it within R, try the following:
-
-```R
-PF02171 <- gzfile("PF02171.hmm.gz", "rt")
-
-# Read first 30 lines
-lines <- readLines(gzfile("PF02171.hmm.gz"))
-```
-
-Alternatively, you can do the same with bash. Go to your terminal and type the following but don't hit enter yet:
-
-```bash
-wget INSERT_YOUR_URL_HERE
-```
-
-Now go back to your browser, right clink on `Download` again and click `inspect element` in Chrome or `inspect` in Firefox. You'll now see a highlighted line of code that includes `PF02171.hmm.gz`. Copy just this part and add it to your wget command like this:
-
-```bash
-wget "INSERT_YOUR_URL_HERE" -O PF02171.hmm.gz
-```
-
-You can now hit enter. wget is a command to download files from the internet to your current location. When a URL links directly to a filename, you don't need to include the `-O` option but as this URL points to an API endpoint, you do need to give wget a name to save the file as.
-
-As this file is gzipped, you can't just inspect it directly, for example with `cat`. Instead, try using `zcat` and then pipe the output to `less`.
-
-![hmm](images/hmm.png)
-
-You don't need to memorise ever component of this file format but it is good to understand the broad concept that an HMM is a large matrix describing the *probability* of finding any particular amino acid at each specific location. 
-
-Now we can use the pre-installed `hmmsearch` command to identify Piwi domain containing peptides in our transcriptome. While this is done using the Bash shell, remember that you can run these sorts of scripts within R using the `system()` command. An example will be provided below.
-
-On the command line, navigate to the hmm folder you created earlier and then run `hmmsearch -h` to see all the options available. At the top you will see the basic usage instructions:
-
-```bash
-Usage: hmmsearch [options] <hmmfile> <seqdb>
-```
-
-This tells you that to run hmmsearch, at a minumum you require an hmmfile (the file we downloaded from InterPro) and a seqdb which is just a protein fasta file. Have a go at constructing your own hmmsearch command but make sure to include `-o` to define an output file as well as `--tblout` to define a per-sequence hit output table.
-
-Examine both output files. Use your bash scripting or R skills to create lists of protein identifiers (those starting with `ENSP`), transcript identifiers (those starting in `ENST`) and gene identifiers (those starting in `ENSG`). How many of each did it find? Inspect the e-values. Are there any outliers?  What parameters would you modify if you were to run this search again?
-
-It is also possible to download the entire Pfam HMM database and then use the command `hmmscan` to identify all protein domains withing a protein of interest, although we might only try this out if we have the time.
-
-### Self guided sequence searches
-
-So far today we have conducted BLAST searches and hmm searches of the human transcriptome using hydra and sperm whale PIWI sequences, however for your project, your task is to identify `Aquaporin` sequences in two phylogenetic lineages. Last week we did a bunch of database searches using text inputs to populate our gene lists but this can lead to false negatives where certain sequences are missed. For the rest of the tutorial, your task is to use BLAST and hmmsearch to identify candidate aquaporin genes from the species you will be comparing. As you identify genes, remember to append them to the multi-fasta we created last week. If you need to download a transcriptome for your species, try [ensembl](https://www.ensembl.org/index.html) for vertebrates or [ensembl metazoa](https://metazoa.ensembl.org/index.html) for inverts.
-
-It is also super important to ensure that you are documenting everything in your RMarkdown document! You should include all the code you use there, descriptions of what you are doing and why, and where you obtained data from! 
+Your task will be to describe the evolution of your gene family within the Bilateria. To do this, you will need to identify all the members of your gene family from at least two representative species from each of the three major bilaterian clades (so six species in total, minimum), in addition to a couple of genes from a single non-bilaterian to use as an `out group`. You may use any method you like to identify these genes, from text-based searches of NCBI to BLAST searches of whole genomes. Whole genomes can be downloaded from [Ensembl]( https://www.ensembl.org/). 
