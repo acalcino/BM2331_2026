@@ -1,4 +1,4 @@
-# Basic Local Alignment Search Tool (BLAST) and Hidden Markov Models (HMMs)
+# Basic Local Alignment Search Tool (BLAST)
 
 Last week we learnt about the NCBI and other biological databases. These are extremely useful tools for obtaining sequence data but so far we've been limited to only using text searches to identify sequences based on metadata. This limitation is a problem for a number of reasons:
 
