@@ -18,3 +18,5 @@ Week 1: [Bash, R and common file formats](Tutorial_1/01_intro)
 Week 2: [Navigating NCBI and other databases](Tutorial_2/02_databases.md)
 
 Week 3: [BLAST](Tutorial_3/03_blast.md)
+
+Week 3: [Protein domains and MSAs](Tutorial_4/04_msa.md)
