@@ -110,18 +110,20 @@ Today we will be trying to do as much as we can in R so make sure to write all y
 As we will be operating out of our working directory in R, make sure you setwd() correctly. You'll also need to create a new directory for all your MSA files.
 
 ```R
-setwd("/data/users/username/tut_4/phylogenetic_project")
+setwd("/data/users/username/phylogenetic_project")
 dir.create("msa")
 ```
 
 Next you'll need to import your fasta file and use this to create an AAStringSet object, which is a data structure native to the `Biostrings` package used for efficient fasta processing. As we are using the `Biostrings` package, you'll first need to load it. I like to have a code chunk right at the top of my RMarkdown document where I import all the libraries I'll need at the beginning. As you don't want to mess your final pdf file up with unnecessary output text, I would set `echo` to TRUE and `include` to FALSE.
+
+Remember, when importing your fasta file it's important to get the location correct. A moment ago we created a new directory for our MSA work, but the fasta file we created two weeks ago will be in a different location. Your options are to move the fasta to your new folder, to copy it to your new folder or to just ensure that you use the correct location when importing the file into R. I'll go with that third option here.
 
 ```R
 # Load library
 library(Biostrings)
 
 # Import fasta
-fasta <- "seqs/aquaporins_mollusc.fa"
+fasta <- "../tut_2/aqp_multi_fasta.fa"
 seqs <- readAAStringSet(fasta)
 
 # Have a quick look to see if it has imported correctly.
@@ -190,19 +192,19 @@ You can see a few options there and also a few example scripts of how you might 
 Move into your `msa` directory, create a new directory for mafft alignments and then conduct your alignment.
 
 ```bash
-cd /data/users/username/tut_4/phylogenetic_project/msa
+cd /data/users/username/phylogenetic_project/msa
 mkdir mafft
 cd mafft
 
 # Run mafft
-mafft --maxiterate 1000 --genafpair  ../../seqs/hox_ciona.fa >hox_ciona_mafft_genafpair_alignment.fa
+mafft --maxiterate 1000 --genafpair  ../../tut_2/aqp_multi_fasta.fa >aqp_mafft_genafpair_alignment.fa
 
 ```
 
 Compare this to the output you get using `--localpair`.
 
 ```bash
-mafft --maxiterate 1000 --localpair  ../../seqs/hox_ciona.fa >hox_ciona_mafft_localpair_alignment.fa
+mafft --maxiterate 1000 --localpair  ../../tut_2/aqp_multi_fasta.fa >aqp_mafft_localpair_alignment.fa
 ```
 Now, go back to R and try and follow the method above to create a create a `msaPrettyPrint` pdf of this alignment too. Remember to import the mafft alignment using `readAAStringSet`.
 
@@ -211,7 +213,7 @@ There are graphical programs for looking at alignments too. I like one called Al
 ```bash
 
 # Make sure to use the correct username, filepath and filename
-scp username@bioinformatics.nec-mf-proj01.cloud.edu.au:/home/andrewc/working-directory/phylogenetic_project/msa/aligned_sequences.fa ./
+scp username@bioinformatics.nec-mf-proj01.cloud.edu.au:/data/users/username/working-directory/phylogenetic_project/msa/aqp_mafft_genafpair_alignment.fa ./
 
 ```
 
@@ -227,7 +229,7 @@ As with aligners, there are many programs available to trim alignments but today
 
 ```R
 
-system("trimal -in /data/users/username/tut_4/phylogenetic_project/msa/mafft/hox_ciona_mafft_genafpair_alignment.fa -out /data/users/username/tut_4/phylogenetic_project/msa/mafft/hox_ciona_trimal_automated.fa -automated1")
+system("trimal -in /data/users/username/working-directory/phylogenetic_project/msa/aqp_mafft_genafpair_alignment.fa -out /data/users/username/working-directory/phylogenetic_project/msa/aqp_mafft_genafpair_alignment_trimal_automated.fa -automated1")
 
 ```
 
@@ -241,7 +243,7 @@ Another option is [gblocks](https://home.cc.umanitoba.ca/~psgendb/doc/Castresana
 library(ips)
 
 # Read in the alignment file
-aligned <- readAAStringSet("msa/mafft/hox_ciona_mafft_genafpair_alignment.fa")
+aligned <- readAAStringSet("msa/aqp_mafft_genafpair_alignment.fa")
 
 # Modify the headers because Gblocks doesn't like long headers. This shortens them by removing everything from the first space onwards
 names(aligned) <- sub(" .*", "", names(aligned))
@@ -262,6 +264,6 @@ aligned_trimmed <- gblocks(aligned_matrix,
 cat("After Gblocks:", ncol(aligned_trimmed), "\n")
 
 # Save to file
-write.FASTA(aligned_trimmed, "msa/mafft/hox_ciona_gblocks_trimmed.fa")
+write.FASTA(aligned_trimmed, "msa/mafft/aqp_gblocks_trimmed.fa")
 
 ```

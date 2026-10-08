@@ -19,4 +19,4 @@ Week 2: [Navigating NCBI and other databases](Tutorial_2/02_databases.md)
 
 Week 3: [BLAST](Tutorial_3/03_blast.md)
 
-Week 3: [Protein domains and MSAs](Tutorial_4/04_msa.md)
+Week 4: [Protein domains and MSAs](Tutorial_4/04_msa.md)
