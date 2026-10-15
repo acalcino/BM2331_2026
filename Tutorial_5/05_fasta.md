@@ -2,11 +2,11 @@
 
 Today is all about populating your multi-fasta. By this stage your fasta should have entries for every representative sequence from your particular gene family found in humans, but as the goal of our project is to describe the evolution of our gene family across the metazoa, we also need to sample sequences from representative species from other phylogenetic lineages.
 
-![tree](images/tree.jpg)
+![tree](images/tree.png)
 
-This phylogenetic tree describes the relationship between the three major bilaterian clades `Lophotrochozoa, Ecdysozoa and Deuterotomia,` as well as the non-bilaterian clades `Cnidaria, Profera and Placozoa`. For whatever reason, in this tree `Ctenophora` is conspicuously missing.
+This phylogenetic tree describes the relationship between the three major bilaterian clades *Lophotrochozoa, Ecdysozoa* and *Deuterotomia*, as well as the non-bilaterian clades *Cnidaria, Profera* and *Placozoa*. For whatever reason, in this tree *Ctenophora* is conspicuously missing.
 
-Our goal today is to choose two representative species from each of the three bilaterian clades, as well as one non-bilaterian, and to isolate any members of your particular gene family that may exist in those species. To produce a robust phylogenetic tree of your gene family, more is always better. If you have time, I'd encourage you to sample as many species as possible but for now, aim for two from each clade for a total of eight species (2x Lophotrochozoa, 2x Ecdysozoa, 2x Deuterostomia, 1x non-bilaterian and your human orthologues).
+Our goal today is to choose two representative species from each of the three bilaterian clades, as well as one non-bilaterian, and to isolate any members of your particular gene family that may exist in those species. To produce a robust phylogenetic tree of your gene family, more is always better. If you have time, I'd encourage you to sample as many species as possible but for now, aim for two from each clade for a total of eight species (2x *Lophotrochozoa*, 2x *Ecdysozoa*, 2x *Deuterostomia*, 1x non-bilaterian and your human orthologues).
 
 ## Methodology
 
@@ -62,6 +62,8 @@ There are many ways in which you could construct a workflow to achieve the aim o
 
 ## Maintain your RMarkdown document
 
-Make sure everything you do is noted in your RMarkdown doc. Here's how mine looks at the moment.
+Make sure everything you do is noted in your RMarkdown doc. Here's how mine looks at the moment. I went with something like Workflow 1 here.
 
 ![rmarkdown](images/rmarkdown.png)
+
+There are a bunch of hints in this screenshot about what you'll need to do to follow the workflow as detailed above. You'll notice that wherever possible, I've gone with native R code but for programs that are written for `bash` not `R`, I've wrapped the execution of the program in a `system()` command.
