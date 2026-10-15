@@ -18,11 +18,15 @@ This is the easiest method to start obtatining results and the one students usua
 
 ### BLAST searches of genomes
 
-Using BLAST is much more robust. Obtain the complete translated transcriptome sequence of your target species from [Ensembl](https://www.ensembl.org/), build a blastp database for it and then perform a BLAST search against this database using one of your human sequences as a query. To get the translated transcriptome file, click on `Genome Selector`, type in your species name and then on the results page, click the `FTP` link. Under `geneset`, right click on `pep.fa.bgz` and then `copy link address`. Go to the command line, navigate to the folder where you want to store the file and then use the `wget` command to download the file.
+Using BLAST is much more robust. Obtain the complete translated transcriptome sequence of your target species from [Ensembl](https://www.ensembl.org/), build a blastp database for it and then perform a BLAST search against this database using one of your human sequences as a query. To get the translated transcriptome file, click on `Genome Selector`, type in your species name and then on the results page, click the `FTP` link. Under `geneset`, right click on `pep.fa.bgz` and then `copy link address`. Go to RStudio, make sure your working directory is set to where you want to store the file and then use the `download.file()` command to download the file.
 
-```bash
+```R
 # An example command to download the Daphnia pulex transcriptome fasta
-wget http://ftp.ebi.ac.uk/pub/ensemblorganisms/GCF/021/134/715/1/refseq/2022_07/geneset/pep.fa.bgz
+download.file(
+    url = "http://ftp.ebi.ac.uk/pub/ensemblorganisms/GCF/021/134/715/1/refseq/2022_07/geneset/pep.fa.bgz", 
+    destfile = "pep.fa.bgz", 
+    method = "wget"
+)
 
 ```
 
@@ -32,3 +36,32 @@ In the previous tutorial we navigated to [Interpro](https://www.ebi.ac.uk/interp
 
 ## Workflow
 
+There are many ways in which you could construct a workflow to achieve the aim of obtaining all orthologues from your gene family from a bunch of species. Here's are a couple of examples:
+
+**Workflow 1:**
+
+1. Download transcriptome files for all target species to one folder
+2. Unzip them
+3. Concatenate them into one mega fasta file (note: mega is not official terminology!)
+4. Conduct an `hmmsearch` against mega fasta using your gene family specific hmm with appropriate filters to ensure correct domain architecture
+5. Inspect results and copy headers from best candidate sequences, keeping in mind that there might be multiple proteins coming from alternatively spliced transcripts of a single gene.
+6. Build a blastp database of mega fasta
+7. Use `blastdbcmd` to extract fasta entries for your target sequences
+8. Perform a `blastp` search against your blast database to check that no genes have been missed.
+
+**Workflow 2:**
+
+1. Download transcriptome files for all target species to one folder
+2. Unzip them
+3. Concatenate them into one mega fasta file (note: mega is not official terminology!)
+4. Build a blastp database of mega fasta
+5. Perform a `blastp` search against your blast database using a human sequence as the query
+6. Inspect results and copy headers from best candidate sequences, keeping in mind that there might be multiple proteins coming from alternatively spliced transcripts of a single gene.
+7. Use `blastdbcmd` to extract fasta entries for your target sequences
+8. Conduct an `hmmsearch` against mega fasta using your gene family specific hmm with appropriate filters to ensure correct domain architecture
+
+## Maintain your RMarkdown document
+
+Make sure everything you do is noted in your RMarkdown doc. Here's how mine looks at the moment.
+
+![rmarkdown](images/rmarkdown.png)
