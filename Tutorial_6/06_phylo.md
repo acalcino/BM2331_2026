@@ -474,7 +474,7 @@ You can now go back to the `NJ(dm)` step above to use this new distance matrix t
 
 ## For next week
 
-Today we produced two trees - a neighbour joining tree using a p-value distance matrix, and a second neighbour joining tree using a maximum likelihood distance matrix. Next week we will move on from NJ trees and produce a Maximum Likelihood tree directly. To do this, we are required to provide an initial tree over which the ML algorithm will iterate to produce a new, hopefully more reliable tree. 
+Today we produced two trees - a neighbour joining tree using a p-distance matrix, and a second neighbour joining tree using a maximum likelihood distance matrix. Next week we will move on from NJ trees and produce a Maximum Likelihood tree directly. To do this, we are required to provide an initial tree over which the ML algorithm will iterate to produce a new, hopefully more reliable tree. 
 
 Several options exist for which tree we should begin with including a random tree with a topology not based on anything biological at all, a tree with a single node from which all branches radiate (basically a huge polytomy that resembles a star), or we could provide it a guide tree calculated using some other algorithm that has some sort of grounding in biological truth. How convenient then that that's exactly what we produced today!
 

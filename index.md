@@ -22,3 +22,5 @@ Week 3: [BLAST](Tutorial_3/03_blast.md)
 Week 4: [Protein domains and MSAs](Tutorial_4/04_msa.md)
 
 Week 5: [Populating your multi-fasta](Tutorial_5/05_fasta.md)
+
+Week 6: [Phylogenetics I](Tutorial_6/06_phylo.md)
