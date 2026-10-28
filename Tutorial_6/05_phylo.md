@@ -22,7 +22,98 @@ But when we do this for single genes/proteins, this is called `phylogenetics`, a
 
 ![phylogeneitcs](images/phylogenetics.png)
 
-Today we are going to build phylogenetic trees of our gene family of interest, based on the multiple sequence alignment we created in the previous tutorial. As with all things bioinformatics, there is more than one way to skin a cat. In the phylogenetics lectures you learnt about multiple methods to infer relatedness between aligned sequences including Neighbour Joining (NJ), Maximum Likelihood (ML), Bayesian Inference etc. Today we'll try to build two trees, one using a simple NJ algorithm and another using a more sophisticated ML algorthim to compare their performance in terms of accuracy and computational demand.
+Today we are going to take the multi-fastas we produced last week, create a multiple sequence alignment (MSA), trim it to remove uninformative regions and then use this build a phylogenetic tree of our gene family to describe its evolution within the Metazoa.
+
+## MSAs ##
+
+In tutorial 4 we had a go at producing an MSA so today we're going to do the same thing but this time with our completed fasta. In R, set your working directory, import your fasta and convert it to an AAStringSet object.
+
+```R
+# Set wd
+setwd("/data/users/username/phylogenetic_project")
+
+# Load library
+library(Biostrings)
+
+# Import fasta from wherever you have it saved
+fasta <- "aqp_multi_fasta.fa"
+seqs <- readAAStringSet(fasta)
+
+# Have a quick look to see if it has imported correctly.
+seqs
+
+```
+
+Run your MSA using the `MSA` R library and the options we used in tutorial 4
+
+```R
+# Load library
+library(msa)
+
+# Create a folder for your MSAs
+dir.create("msa")
+
+# Perform the alignment. Try Muscle algorithm first, but other options are ClustalW and ClustalOmega
+aligned <- msa(seqs, method="Muscle")
+
+# Have a look at the alignment
+aligned
+
+# Convert to AAMultipleAlignment for further analysis
+aligned_aa <- as(aligned, "AAMultipleAlignment")
+
+# Have a look at the AAMultipleAlignment object
+aligned_aa
+
+# Save the alignment file
+writeXStringSet(AAStringSet(aligned_aa), "msa/msa_muscle_aligned_sequences.fa")
+
+```
+
+Generate a pretty pdf of your alignment using msaPrettyPrint. Remember that `msaPrettyPrint` has a bug where it will save the metadata text file in the correct location that you specify in your command, but no matter what you do, it will save the pdf in your working directory. You can either temporarily change your working directory to wherever you want to save the pdf to using `setwd()`, or you can just move the pdf after its created.
+
+```R
+# Generate PDF with custom name
+msaPrettyPrint(aligned_aa, file="msa_muscle_alignment.pdf", askForOverwrite=FALSE)
+
+```
+
+![msa](images/msa.png)
+
+There are graphical programs for looking at alignments too. I like one called Aliview which can be downloaded from [here](https://ormbunkar.se/aliview/) and installed on your own computer. Once you do this, you can use `scp` to download the MSA file to your computer and then open it in Aliview.
+
+REMEMBER TO MAKE SURE YOUR COMMAND LINE WINDOW IS LOOKING AT YOUR COMPUTER AND NOT THE SERVER WHEN RUNNING scp!
+
+```bash
+
+# Make sure to use the correct username, filepath and filename
+scp username@bioinformatics.nec-mf-proj01.cloud.edu.au:/data/users/username/working-directory/phylogenetic_project/msa/msa_muscle_aligned_sequences.fa ./
+
+```
+
+![aliview](images/aliview.png)
+
+You can also use MAFFT to try out another aligner if you like (details in the week 4 tutorial file), but today we'll just stick with this one.
+
+## Trimming
+
+Multiple sequence alignment algorithms sometimes make mistakes in highly variable regions (rapid evolution makes homology unclear), regions with many insertions/deletions, terminal (end) regions of sequences and low-complexity regions. These misalignments can cause problems in the eventual phylogenetic tree because they can suggest that evolutionary relationships that don't exist. Phylogenetic models assume positions are homologous and so if you have misaligned regions, this breaks this assumption.
+
+This is why we trim our alignments before doing phylogenetic analysis - to remove poorly aligned regions that contain little to no phylogenetic signal. There is always the risk that we may clip off some correctly aligned positions, but this is a balance we need to manage.
+
+As with aligners, there are many programs available to trim alignments but today we will go with [trimal](https://github.com/inab/trimal). This is a command line program but let's execute it from within R using a `system` command.
+
+```R
+
+system("trimal -in /data/users/username/working-directory/phylogenetic_project/msa/msa_muscle_aligned_sequences.fa -out /data/users/username/working-directory/phylogenetic_project/msa/msa_muscle_aligned_trimal_automated.fa -automated1")
+
+```
+
+Instead of `-automated1`, try one of the other options such as `-gappyout` or `-gt 0.5`. Have a read of what these do by bringing up the trimal help file on the command line.
+
+# Phylogenetic trees
+
+Finally its time to create our first phylogenetic tree. As with all things bioinformatics, there is more than one way to skin a cat. In the phylogenetics lectures you learnt about several methods to infer relatedness between aligned sequences including Neighbour Joining (NJ), Maximum Likelihood (ML), Bayesian Inference etc. Today we'll try to build two trees, one using a simple NJ algorithm and another using a more sophisticated ML algorthim to compare their performance in terms of accuracy and computational demand.
 
 >Phylogenetic trees represent the evolutionary relationships among sequences. Closely related sequences are grouped together, and branch lengths indicate the amount of evolutionary change or genetic distance between them.
 
@@ -32,28 +123,20 @@ This means that to go from a multiple sequence alignment to a phylogenetic tree,
 
 Neighbour joining builds a tree that iteratively joins pairs of taxa that minimise the total branch length of the tree. To do this, NJ algorithms take in a distance matrix which contains pairwise evolutionary distances between taxa, calculated from a multiple sequence alignment. Let's have a go at creating one so we can see what this means along the way.
 
-In RStudio, set your working directory to your `phylogenetic_project` directory, create a new folder inside called something like `trees` and then inside this, create `NJ`.
+Create a new directory to hold your trees, load the `phangorn` package for tree construction, load your trimmed alignment and convert your alignment to phangorn format.
 
 ```R
 
-setwd("~/working-directory/phylogenetic_project")
-
+# Create directory
 dir.create("trees/NJ", recursive = TRUE)
 
-```
-
-Now we are going to load all the appropriate libraries including the `phangorn` package for tree construction and we'll also load our MSA.
-
-```R
-
 library(phangorn)
-library(Biostrings)
 
-# Load the alignment file
-alignment <- readAAStringSet("msa/msa_muscle_aligned_sequences.fa")
+# Load trimmed alignment
+trimmed_alignment <- readAAStringSet("msa/msa_muscle_aligned_trimal_automated.fa")
 
-# Convert Convert to phangorn format
-phyDat_alignment <- as.phyDat(alignment, type = "AA")
+# Convert your alignment to phangorn format
+phyDat_alignment <- as.phyDat(trimmed_alignment, type = "AA")
 
 ```
 
@@ -61,7 +144,7 @@ We are now at the point where we need to take our MSA and use this to calculate 
 
 ```R
 
-# Create a p-value based distance matrix
+# Create a p-distance based distance matrix
 dm <- dist.hamming(phyDat_alignment)
 
 # To inspect dm, convert to a matrix
@@ -90,16 +173,16 @@ library(ggtree)
 library(ggplot2)
 library(ape)
 
-p <- ggtree(nj_tree) +
+nj_ggtree <- ggtree(nj_tree) +
     geom_tiplab(size = 3) +
     geom_treescale(x = 0, y = -1, width = 0.1, linesize = 2) +  # Scale bar
     hexpand(.4) +  # Adds extra space for labels
     ggtitle("Neighbor-Joining Tree")
 
-p
+nj_ggtree
 
 # Save the plot as a png
-ggsave("trees/NJ/nj_tree.png", plot = p, width = 12, height = 8, dpi = 300)
+ggsave("trees/NJ/nj_ggtree.png", plot = nj_ggtree, width = 12, height = 8, dpi = 300)
 
 ```
 
@@ -261,17 +344,18 @@ nj_tree_outgroup$node.label <- nj_bs_percent
 
 # Plot using the label aesthetic
 p_bootstrapped <- ggtree(nj_tree_outgroup) +
-    geom_tiplab(size = 3, offset = 0.01) +
-    geom_nodelab(aes(label = label),      # Now it uses tree$node.label
-                 size = 2.5,
-                 hjust = -0.2,
-                 vjust = 0.5) +
-    geom_treescale(x = 0, y = -0.5, 
-                   width = 0.1, 
-                   linesize = 2,
-                   fontsize = 3) +
-    hexpand(.4) +
-    ggtitle("NJ Tree with Bootstrap Support (outgroup rooted)")
+geom_tiplab(size = 3, offset = 0.01) +
+geom_nodelab(aes(label = label),      # Now it uses tree$node.label
+size = 2.5,
+hjust = -0.2,
+vjust = 0.5) +
+geom_treescale(x = 0, y = -0.5,
+linesize = 2,
+fontsize = 3) +
+hexpand(.4) +
+ggtitle("NJ Tree with Bootstrap Support (outgroup rooted)")
+                 
+ggsave("trees/NJ/nj_tree_rooted_bootstrapped.png", plot = p_bootstrapped, width = 12, height = 8, dpi = 300)
 
 ```
 
